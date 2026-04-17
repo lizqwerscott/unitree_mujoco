@@ -3,14 +3,22 @@ import numpy as np
 import pygame
 import sys
 import struct
+import time
 
 from unitree_sdk2py.core.channel import ChannelSubscriber, ChannelPublisher
 
 from unitree_sdk2py.idl.unitree_go.msg.dds_ import SportModeState_
 from unitree_sdk2py.idl.unitree_go.msg.dds_ import WirelessController_
+from unitree_sdk2py.idl.sensor_msgs.msg.dds_ import PointCloud2_, PointField_
+from unitree_sdk2py.idl.sensor_msgs.msg.dds_.PointField_Constants import FLOAT32_
+from unitree_sdk2py.idl.std_msgs.msg.dds_ import Header_
+from unitree_sdk2py.idl.builtin_interfaces.msg.dds_ import Time_
 from unitree_sdk2py.idl.default import unitree_go_msg_dds__SportModeState_
 from unitree_sdk2py.idl.default import unitree_go_msg_dds__WirelessController_
 from unitree_sdk2py.utils.thread import RecurrentThread
+
+
+
 
 import config
 if config.ROBOT=="g1":
@@ -29,6 +37,9 @@ TOPIC_LOWSTATE = "rt/lowstate"
 TOPIC_SECONDARY_IMU = "rt/secondary_imu"
 TOPIC_HIGHSTATE = "rt/sportmodestate"
 TOPIC_WIRELESS_CONTROLLER = "rt/wirelesscontroller"
+TOPIC_CAMERA_RAW = "rt/camera/depth"
+TOPIC_CAMERA_PROCESSED = "rt/camera/processed_depth_cloud"
+
 
 MOTOR_SENSOR_NUM = 3
 NUM_MOTOR_IDL_GO = 20
@@ -111,6 +122,13 @@ class UnitreeSdk2Bridge:
         self.low_cmd_suber = ChannelSubscriber(TOPIC_LOWCMD, LowCmd_)
         self.low_cmd_suber.Init(self.LowCmdHandler, 10)
 
+        # Camera point cloud publishers (raw + processed)
+        if config.ENABLE_DEPTH_RENDER:
+            self.camera_raw_puber = ChannelPublisher(TOPIC_CAMERA_RAW, PointCloud2_)
+            self.camera_raw_puber.Init()
+            self.camera_processed_puber = ChannelPublisher(TOPIC_CAMERA_PROCESSED, PointCloud2_)
+            self.camera_processed_puber.Init()
+
         # joystick
         self.key_map = {
             "R1": 0,
@@ -145,6 +163,32 @@ class UnitreeSdk2Bridge:
                     )
                 )
 
+
+    def PublishCameraData(self, depth_raw: np.ndarray, depth_processed: np.ndarray):
+        """Pack raw and processed depth arrays into PointCloud2_ messages and publish."""
+        t = time.time()
+        stamp = Time_(sec=int(t), nanosec=int((t % 1) * 1e9))
+        header = Header_(stamp=stamp, frame_id=config.CAMERA_FRAME_ID)
+        field = PointField_(name="z", offset=0, datatype=FLOAT32_, count=1)
+
+        def _make_msg(arr: np.ndarray) -> PointCloud2_:
+            flat = arr.flatten().astype(np.float32)
+            total = flat.size
+            return PointCloud2_(
+                header=header,
+                height=1,
+                width=total,
+                fields=[field],
+                is_bigendian=False,
+                point_step=4,
+                row_step=4 * total,
+                data=list(flat.tobytes()),
+                is_dense=True,
+            )
+
+        self.camera_raw_puber.Write(_make_msg(depth_raw))
+        self.camera_processed_puber.Write(_make_msg(depth_processed))
+        
     def PublishLowState(self):
         if self.mj_data != None:
             for i in range(self.num_motor):
