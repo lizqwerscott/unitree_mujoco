@@ -363,8 +363,8 @@ def create_bridge_with_walls(tg, pos, stair_width, stair_height, stair_nums, sta
 if __name__ == "__main__":
     tg = TerrainGenerator()
 
-    create_bridge_with_walls(tg, pos=[1.0, 2.0, 0.0], stair_width=0.2, stair_height=0.15, stair_nums=14, stair_length=1.5, flat_plane_length=2.0)
+    create_bridge_with_walls(tg, pos=[1.0, 2.0, 0.0], stair_width=0.3, stair_height=0.15, stair_nums=14, stair_length=1.5, flat_plane_length=2.0)
 
-    create_multi_stair_with_walls(tg, pos=[-2.0, 5.0, 0.0], stair_width=0.2, stair_height=0.15, stair_nums=14, stair_length=1.5, plane_width=2.0, stairwell_length=0.2)
+    create_multi_stair_with_walls(tg, pos=[-2.0, 5.0, 0.0], stair_width=0.3, stair_height=0.15, stair_nums=14, stair_length=1.5, plane_width=2.0, stairwell_length=0.2)
 
     tg.Save()
