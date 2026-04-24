@@ -359,6 +359,88 @@ def create_bridge_with_walls(tg, pos, stair_width, stair_height, stair_nums, sta
               euler=[0, 0, 0.0],
               size=[total_length, wall_thickness, wall_height])
     # ------------------
+
+def _aabb_overlap(a, b):
+    """Check if two AABBs overlap (a/b: [x_min, x_max, y_min, y_max])."""
+    return not (a[1] <= b[0] or a[0] >= b[1] or a[3] <= b[2] or a[2] >= b[3])
+
+
+def create_random_blocks(tg, region_pos, region_size, density, block_size_min, block_size_max, block_height=None, max_attempts=200):
+    """
+    在指定区域内生成随机块状物体（块之间不互相穿透）。
+
+    Args:
+        tg: TerrainGenerator 实例
+        region_pos: 区域中心位置 [x, y, z]
+        region_size: 区域尺寸 [width, length] (X方向宽度, Y方向长度)
+        density: 块的密度 (0~1)，控制区域内块的数量比例
+        block_size_min: 块的最小尺寸 [w_min, l_min, h_min]
+        block_size_max: 块的最大尺寸 [w_max, l_max, h_max]
+        block_height: 可选，若指定则固定块高度
+        max_attempts: 每次放置的最大尝试次数（默认 200）
+    """
+    half_w, half_l = region_size[0] / 2, region_size[1] / 2
+
+    # 估算总的可能放置数量（基于平均块尺寸的粗略网格）
+    avg_w = (block_size_min[0] + block_size_max[0]) / 2
+    avg_l = (block_size_min[1] + block_size_max[1]) / 2
+    grid_cols = max(1, int(region_size[0] / (avg_w * 1.5)))
+    grid_rows = max(1, int(region_size[1] / (avg_l * 1.5)))
+    total_cells = grid_cols * grid_rows
+
+    # 根据密度决定放置多少个块（至少一个）
+    target_blocks = max(1, int(total_cells * density))
+
+    # 已放置的 AABB 列表，每个为 [x_min, x_max, y_min, y_max]
+    placed_aabbs = []
+    placed_count = 0
+    attempt = 0
+
+    while placed_count < target_blocks and attempt < max_attempts * target_blocks:
+        attempt += 1
+
+        # 在区域内随机位置 (X, Y)
+        x = region_pos[0] + np.random.uniform(-half_w, half_w)
+        y = region_pos[1] + np.random.uniform(-half_l, half_l)
+
+        # 随机块尺寸
+        bx = np.random.uniform(block_size_min[0], block_size_max[0])
+        by = np.random.uniform(block_size_min[1], block_size_max[1])
+        if block_height is not None:
+            bz = block_height
+        else:
+            bz = np.random.uniform(block_size_min[2], block_size_max[2])
+
+        # 计算该块的 AABB（考虑最大偏航旋转的包围盒）
+        diag = np.sqrt(bx**2 + by**2) / 2
+        new_aabb = [
+            x - diag, x + diag,
+            y - diag, y + diag,
+        ]
+
+        # 与已有块检查碰撞（预留微小间隙）
+        margin = 0.01
+        new_aabb_margin = [
+            new_aabb[0] - margin, new_aabb[1] + margin,
+            new_aabb[2] - margin, new_aabb[3] + margin,
+        ]
+        collision = any(_aabb_overlap(new_aabb_margin, p) for p in placed_aabbs)
+
+        if collision:
+            continue
+
+        # Z 位置：块底部在 region_pos[2] 处（即地面高度）
+        pos = [x, y, region_pos[2] + bz / 2]
+
+        # 随机小幅偏航旋转，让块看起来更自然
+        yaw_rand = np.random.uniform(-np.pi, np.pi)
+
+        tg.AddBox(position=pos,
+                  euler=[0.0, 0.0, yaw_rand],
+                  size=[bx, by, bz])
+
+        placed_aabbs.append(new_aabb)
+        placed_count += 1
     
 if __name__ == "__main__":
     tg = TerrainGenerator()
@@ -367,4 +449,11 @@ if __name__ == "__main__":
 
     create_multi_stair_with_walls(tg, pos=[-2.0, 5.0, 0.0], stair_width=0.3, stair_height=0.15, stair_nums=14, stair_length=1.5, plane_width=2.0, stairwell_length=0.2)
 
+    create_random_blocks(tg,
+                         region_pos=[10.0, -10.0, 0.0],
+                         region_size=[10.0, 10.0],
+                         density=0.8,
+                         block_size_min=[0.8, 0.8, 0.05],
+                         block_size_max=[1.5, 1.5, 0.45])
+    
     tg.Save()
