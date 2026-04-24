@@ -335,7 +335,7 @@ def create_bridge_with_walls(tg, pos, stair_width, stair_height, stair_nums, sta
     
     # Add walls on both sides covering the entire structure (stairs + flat plane + stairs)
     wall_thickness = 0.05
-    wall_height = 4
+    wall_height = stair_height * stair_nums + 4
     total_length = stairs_total_length * 2 + flat_plane_length
     
     # Calculate center position of the entire structure
