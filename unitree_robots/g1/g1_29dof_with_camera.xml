@@ -124,13 +124,13 @@
                     range="-0.2618 0.2618" actuatorfrcrange="-50 50" class="ankle_motor"/>
                   <geom type="mesh" contype="0" conaffinity="0" group="1" density="0"
                     rgba="0.2 0.2 0.2 1" mesh="left_ankle_roll_link" />
-                  <geom type="cylinder" size="0.01 0.025"   pos="0.075 -0.026 -0.048" quat="0.7071068 0 0.7071068 0"/>
-                  <geom type="cylinder" size="0.008 0.0835" pos="0.0395 -0.018 -0.048" quat="0.7071068 0 -0.7071068 0"/>
-                  <geom type="cylinder" size="0.01 0.091"  pos="0.039 -0.01 -0.048" quat="0.7071068 0 -0.7071068 0"/>
-                  <geom type="cylinder" size="0.01 0.093"  pos="0.039 0 -0.048" quat="0.7071068 0 -0.7071068 0"/>
-                  <geom type="cylinder" size="0.01 0.091"  pos="0.039 0.01 -0.048" quat="0.7071068 0 -0.7071068 0"/>
-                  <geom type="cylinder" size="0.008 0.0835" pos="0.0395 0.018 -0.048" quat="0.7071068 0 -0.7071068 0"/>
-                  <geom type="cylinder" size="0.01 0.025"   pos="0.075 0.026 -0.048" quat="0.7071068 0 0.7071068 0"/>
+                  <geom type="cylinder" size="0.01 0.045"   pos="0.075 -0.026 -0.048" quat="0.7071068 0 0.7071068 0"/>
+                  <geom type="cylinder" size="0.008 0.1035" pos="0.0395 -0.018 -0.048" quat="0.7071068 0 -0.7071068 0"/>
+                  <geom type="cylinder" size="0.01 0.111"  pos="0.039 -0.01 -0.048" quat="0.7071068 0 -0.7071068 0"/>
+                  <geom type="cylinder" size="0.01 0.113"  pos="0.039 0 -0.048" quat="0.7071068 0 -0.7071068 0"/>
+                  <geom type="cylinder" size="0.01 0.111"  pos="0.039 0.01 -0.048" quat="0.7071068 0 -0.7071068 0"/>
+                  <geom type="cylinder" size="0.008 0.1035" pos="0.0395 0.018 -0.048" quat="0.7071068 0 -0.7071068 0"/>
+                  <geom type="cylinder" size="0.01 0.045"   pos="0.075 0.026 -0.048" quat="0.7071068 0 0.7071068 0"/>
                 </body>
               </body>
             </body>
@@ -187,13 +187,13 @@
                     range="-0.2618 0.2618" actuatorfrcrange="-50 50" class="ankle_motor" />
                   <geom type="mesh" contype="0" conaffinity="0" group="1" density="0"
                     rgba="0.2 0.2 0.2 1" mesh="right_ankle_roll_link" />
-                  <geom type="cylinder" size="0.01 0.025"   pos="0.075 -0.026 -0.048" quat="0.7071068 0 0.7071068 0"/>
-                  <geom type="cylinder" size="0.008 0.0835" pos="0.0395 -0.018 -0.048" quat="0.7071068 0 -0.7071068 0"/>
-                  <geom type="cylinder" size="0.01 0.091"  pos="0.039 -0.01 -0.048" quat="0.7071068 0 -0.7071068 0"/>
-                  <geom type="cylinder" size="0.01 0.093"  pos="0.039 0 -0.048" quat="0.7071068 0 -0.7071068 0"/>
-                  <geom type="cylinder" size="0.01 0.091"  pos="0.039 0.01 -0.048" quat="0.7071068 0 -0.7071068 0"/>
-                  <geom type="cylinder" size="0.008 0.0835" pos="0.0395 0.018 -0.048" quat="0.7071068 0 -0.7071068 0"/>
-                  <geom type="cylinder" size="0.01 0.025"   pos="0.075 0.026 -0.048" quat="0.7071068 0 0.7071068 0"/>
+                  <geom type="cylinder" size="0.01 0.045"   pos="0.075 -0.026 -0.048" quat="0.7071068 0 0.7071068 0"/>
+                  <geom type="cylinder" size="0.008 0.1035" pos="0.0395 -0.018 -0.048" quat="0.7071068 0 -0.7071068 0"/>
+                  <geom type="cylinder" size="0.01 0.111"  pos="0.039 -0.01 -0.048" quat="0.7071068 0 -0.7071068 0"/>
+                  <geom type="cylinder" size="0.01 0.113"  pos="0.039 0 -0.048" quat="0.7071068 0 -0.7071068 0"/>
+                  <geom type="cylinder" size="0.01 0.111"  pos="0.039 0.01 -0.048" quat="0.7071068 0 -0.7071068 0"/>
+                  <geom type="cylinder" size="0.008 0.1035" pos="0.0395 0.018 -0.048" quat="0.7071068 0 -0.7071068 0"/>
+                  <geom type="cylinder" size="0.01 0.045"   pos="0.075 0.026 -0.048" quat="0.7071068 0 0.7071068 0"/>
                 </body>
               </body>
             </body>
